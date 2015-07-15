@@ -89,34 +89,46 @@ $4 = (SetLink
 )
 
 $5 = (SetLink
-   (ListLink
-      (ConceptNode "X")
-      (ConceptNode "A1")
-      (ConceptNode "B1")
-   )
-   (ListLink
-      (ConceptNode "X")
-      (ConceptNode "B1")
-      (ConceptNode "A1")
-   )
-   (ListLink
-      (ConceptNode "X")
-      (ConceptNode "A2")
-      (ConceptNode "B2")
-   )
-   (ListLink
-      (ConceptNode "X")
-      (ConceptNode "B2")
-      (ConceptNode "A2")
-   )
-   (ListLink
-      (ConceptNode "X")
+   (ListLink (av 0 0 0)
+      (UnorderedLink
+         (ConceptNode "X")
+      )
       (ConceptNode "A3")
       (ConceptNode "B3")
    )
-   (ListLink
-      (ConceptNode "X")
+   (ListLink (av 0 0 0)
+      (UnorderedLink
+         (ConceptNode "X")
+      )
       (ConceptNode "B3")
       (ConceptNode "A3")
+   )
+   (ListLink (av 0 0 0)
+      (UnorderedLink
+         (ConceptNode "X")
+      )
+      (ConceptNode "A2")
+      (ConceptNode "B2")
+   )
+   (ListLink (av 0 0 0)
+      (UnorderedLink
+         (ConceptNode "X")
+      )
+      (ConceptNode "B2")
+      (ConceptNode "A2")
+   )
+   (ListLink (av 0 0 0)
+      (UnorderedLink
+         (ConceptNode "X")
+      )
+      (ConceptNode "A1")
+      (ConceptNode "B1")
+   )
+   (ListLink (av 0 0 0)
+      (UnorderedLink
+         (ConceptNode "X")
+      )
+      (ConceptNode "B1")
+      (ConceptNode "A1")
    )
 )
