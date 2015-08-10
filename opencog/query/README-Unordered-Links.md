@@ -131,6 +131,7 @@ UnorderedLink "A" (
   UnorderedLink "B" (
     UnorderedLink "D" (
       Node "N5"
+      Node "N6"
     )
     Node "N1"
     Node "N2"
