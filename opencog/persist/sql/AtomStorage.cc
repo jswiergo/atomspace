@@ -42,6 +42,7 @@
 #include <opencog/atomspace/IndefiniteTruthValue.h>
 #include <opencog/atomspace/Link.h>
 #include <opencog/atomspace/Node.h>
+#include <opencog/atomspace/ProbabilisticTruthValue.h>
 #include <opencog/atomspace/SimpleTruthValue.h>
 #include <opencog/atomspace/TLB.h>
 #include <opencog/atomspace/TruthValue.h>
@@ -854,6 +855,7 @@ void AtomStorage::do_store_single_atom(AtomPtr atom, int aheight)
 			break;
 		case SIMPLE_TRUTH_VALUE:
 		case COUNT_TRUTH_VALUE:
+		case PROBABILISTIC_TRUTH_VALUE:
 			STMTF("stv_mean", tv->getMean());
 			STMTF("stv_confidence", tv->getConfidence());
 			STMTF("stv_count", tv->getCount());
@@ -1312,13 +1314,28 @@ AtomPtr AtomStorage::makeAtom(Response &rp, Handle h)
 			char *p = (char *) rp.outlist;
 			while (p)
 			{
-				if (*p == '}') break;
+				// Break if there is no more atom in the outgoing set
+				// or the outgoing set is empty in the first place
+				if (*p == '}' or *p == '\0') break;
 				Handle hout = (Handle) strtoul(p+1, &p, 10);
 				outvec.push_back(hout);
 			}
 #endif /* USE_INLINE_EDGES */
 			atom = createLink(realtype, outvec);
 		}
+
+		// Create via the factory for specific types of atom
+		// Otherwise at the later stage of the sql-load process when the
+		// same atom is being added to the AtomTable (which will also call
+		// the same factory function), the dynamic-casting of any atom of
+		// one of these types will fail, resulting a new atom being created.
+		// But the new atom is having a different UUID, if there exist another
+		// link connecting to this atom, the system will fail to find the
+		// correct handle of this atom (because it is using the original
+		// UUID, as retrieve from the SQL database). Since each of the atoms
+		// in the outgoing set of a link needs to be valid, we will get
+		// an "Atom in outgoing set isn't known!" error as a result
+		atom = AtomTable::factory(realtype, atom);
 	}
 	else
 	{
@@ -1366,6 +1383,12 @@ AtomPtr AtomStorage::makeAtom(Response &rp, Handle h)
 		{
 			TruthValuePtr itv(IndefiniteTruthValue::createTV(rp.mean, rp.count, rp.confidence));
 			atom->setTruthValue(itv);
+			break;
+		}
+		case PROBABILISTIC_TRUTH_VALUE:
+		{
+			TruthValuePtr ptv(ProbabilisticTruthValue::createTV(rp.mean, rp.confidence, rp.count));
+			atom->setTruthValue(ptv);
 			break;
 		}
 		default:
